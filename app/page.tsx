@@ -1,9 +1,9 @@
-import Link from "next/link";
 import { SIDOS } from "./lib/regions";
-import { sidoServiceCount, totalServiceCount } from "./lib/query";
+import { totalServiceCount } from "./lib/query";
 import { CATEGORIES } from "./lib/categories";
 import { SITE_NAME } from "./site";
 import SearchExplorer from "./components/SearchExplorer";
+import KoreaMap from "./components/KoreaMap";
 
 export default function Home() {
   const total = totalServiceCount();
@@ -39,46 +39,15 @@ export default function Home() {
         <SearchExplorer />
       </section>
 
-      {/* Browse by region */}
+      {/* Browse by region — map */}
       <section>
         <div className="mb-3 flex items-baseline justify-between">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-stone-400">
-            지역으로 찾기
+            지도로 찾기
           </h2>
-          <span className="text-xs text-stone-400">시·도 → 시·군·구</span>
+          <span className="text-xs text-stone-400">지역을 눌러보세요</span>
         </div>
-        <ul className="grid grid-cols-3 gap-2.5 sm:grid-cols-4">
-          {SIDOS.map((s) => {
-            const count = sidoServiceCount(s.slug);
-            const hasServices = count > 0;
-            return (
-              <li key={s.slug}>
-                <Link
-                  href={`/${s.slug}`}
-                  className={
-                    "group flex h-full flex-col items-start justify-between gap-2 rounded-2xl border bg-white px-3.5 py-3.5 transition dark:bg-stone-900 " +
-                    (hasServices
-                      ? "border-stone-200 hover:-translate-y-0.5 hover:border-teal-400 hover:shadow-md dark:border-stone-800 dark:hover:border-teal-600"
-                      : "border-stone-100 opacity-70 hover:opacity-100 dark:border-stone-800/60")
-                  }
-                >
-                  <span className="text-sm font-bold tracking-tight">
-                    {s.short}
-                  </span>
-                  {hasServices ? (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-teal-50 px-2 py-0.5 text-xs font-semibold text-teal-700 dark:bg-teal-950/50 dark:text-teal-300">
-                      {count}건
-                    </span>
-                  ) : (
-                    <span className="text-xs text-stone-300 dark:text-stone-600">
-                      수집 예정
-                    </span>
-                  )}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        <KoreaMap />
       </section>
     </div>
   );
