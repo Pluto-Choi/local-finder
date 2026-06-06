@@ -38,6 +38,8 @@ export default async function SidoPage({
   const sigunguSorted = [...region.sigungu].sort(
     (a, b) => (counts.get(b) ?? 0) - (counts.get(a) ?? 0),
   );
+  const sigunguTotal = [...counts.values()].reduce((a, b) => a + b, 0);
+  const total = wide.length + sigunguTotal;
 
   return (
     <div>
@@ -49,14 +51,21 @@ export default async function SidoPage({
         <span className="text-stone-600 dark:text-stone-300">{region.short}</span>
       </nav>
 
-      <h1 className="mb-6 text-2xl font-extrabold tracking-tight">
+      <h1 className="mb-1.5 text-2xl font-extrabold tracking-tight">
         {region.name}
       </h1>
+      {total > 0 && (
+        <p className="mb-6 text-sm text-stone-500 dark:text-stone-400">
+          총 <strong className="font-semibold text-teal-700 dark:text-teal-300">{total}개</strong> 서비스
+          {wide.length > 0 && ` · 전역 ${wide.length}`}
+          {sigunguTotal > 0 && ` · 시·군·구 ${sigunguTotal}`}
+        </p>
+      )}
 
       {wide.length > 0 && (
         <section className="mb-8">
           <h2 className="mb-3 text-sm font-semibold text-stone-500 dark:text-stone-400">
-            {region.short} 전역에서 이용 가능
+            {region.short} 전역에서 이용 가능 ({wide.length})
           </h2>
           <FilterableServiceList services={wide} />
         </section>
@@ -66,6 +75,11 @@ export default async function SidoPage({
         <section>
           <h2 className="mb-3 text-sm font-semibold text-stone-500 dark:text-stone-400">
             시·군·구별 보기
+            {sigunguTotal > 0 && (
+              <span className="ml-1 font-normal text-stone-400">
+                · 서비스 {sigunguTotal}개
+              </span>
+            )}
           </h2>
           <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4">
             {sigunguSorted.map((gu) => {
