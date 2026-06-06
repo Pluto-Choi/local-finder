@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { KOREA_PATHS, MAP_VIEWBOX } from "../lib/koreaMapPaths";
 import { SIDOS, getSido } from "../lib/regions";
@@ -24,8 +23,11 @@ function fillFor(count: number, active: boolean): string {
   return "#99f6e4"; // teal-200
 }
 
-export default function KoreaMap() {
-  const router = useRouter();
+export default function KoreaMap({
+  onSelect,
+}: {
+  onSelect: (slug: string) => void;
+}) {
   const [hover, setHover] = useState<string | null>(null);
 
   const regions: RegionInfo[] = KOREA_PATHS.map((p) => {
@@ -41,10 +43,6 @@ export default function KoreaMap() {
   });
 
   const hovered = regions.find((r) => r.slug === hover) ?? null;
-
-  function go(slug: string) {
-    router.push(`/${slug}`);
-  }
 
   return (
     <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_220px] sm:items-start">
@@ -69,14 +67,14 @@ export default function KoreaMap() {
                 style={{ filter: active ? "drop-shadow(0 2px 6px rgba(13,148,136,0.4))" : undefined }}
                 onMouseEnter={() => setHover(r.slug)}
                 onMouseLeave={() => setHover((h) => (h === r.slug ? null : h))}
-                onClick={() => go(r.slug)}
+                onClick={() => onSelect(r.slug)}
                 tabIndex={0}
                 role="button"
                 aria-label={`${r.short} ${r.count}건`}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
-                    go(r.slug);
+                    onSelect(r.slug);
                   }
                 }}
               />
@@ -134,7 +132,7 @@ export default function KoreaMap() {
               type="button"
               onMouseEnter={() => setHover(s.slug)}
               onMouseLeave={() => setHover((h) => (h === s.slug ? null : h))}
-              onClick={() => go(s.slug)}
+              onClick={() => onSelect(s.slug)}
               className={
                 "flex items-center justify-between gap-2 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition " +
                 (active
