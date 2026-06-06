@@ -23,19 +23,26 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="min-h-dvh antialiased">
-        <header className="border-b border-stone-200 dark:border-stone-800">
-          <div className="mx-auto flex max-w-3xl items-center gap-2 px-5 py-4">
-            <Link href="/" className="flex items-center gap-2">
-              <span className="text-xl">🧭</span>
-              <span className="text-base font-bold tracking-tight">
+        <header className="sticky top-0 z-30 border-b border-stone-200/70 bg-[var(--background)]/80 backdrop-blur-md dark:border-stone-800/70">
+          <div className="mx-auto flex max-w-4xl items-center gap-2 px-5 py-3.5">
+            <Link href="/" className="group flex items-center gap-2">
+              <span className="grid h-8 w-8 place-items-center rounded-xl bg-teal-600/10 text-lg transition group-hover:bg-teal-600/20 dark:bg-teal-400/10">
+                🧭
+              </span>
+              <span className="text-[15px] font-bold tracking-tight">
                 {SITE_NAME}
               </span>
             </Link>
           </div>
         </header>
-        <main className="mx-auto max-w-3xl px-5 py-6">{children}</main>
-        <footer className="mx-auto max-w-3xl px-5 py-10 text-xs text-stone-400">
-          {SITE_TAGLINE}
+        <main className="mx-auto max-w-4xl px-5 py-7">{children}</main>
+        <footer className="mx-auto max-w-4xl px-5 pb-12 pt-6">
+          <div className="border-t border-stone-200/70 pt-6 text-xs leading-relaxed text-stone-400 dark:border-stone-800/70">
+            <p className="font-medium text-stone-500 dark:text-stone-400">
+              {SITE_NAME}
+            </p>
+            <p className="mt-1">{SITE_TAGLINE}</p>
+          </div>
         </footer>
       </body>
     </html>

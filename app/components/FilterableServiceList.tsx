@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { categoryMeta } from "../lib/categories";
+import { categoryMeta, categoryStyle } from "../lib/categories";
 import type { Service, ServiceCategory } from "../lib/types";
 import ServiceCard from "./ServiceCard";
 
@@ -40,6 +40,7 @@ export default function FilterableServiceList({
               <FilterChip
                 key={key}
                 label={`${meta.emoji} ${meta.label}`}
+                dot={categoryStyle(key).dot}
                 active={category === key}
                 onClick={() => setCategory(category === key ? null : key)}
               />
@@ -58,10 +59,12 @@ export default function FilterableServiceList({
 
 function FilterChip({
   label,
+  dot,
   active,
   onClick,
 }: {
   label: string;
+  dot?: string;
   active: boolean;
   onClick: () => void;
 }) {
@@ -70,12 +73,15 @@ function FilterChip({
       type="button"
       onClick={onClick}
       className={
-        "rounded-full border px-3 py-1 text-xs font-medium transition " +
+        "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition " +
         (active
           ? "border-teal-500 bg-teal-500 text-white"
-          : "border-stone-200 bg-white text-stone-600 hover:border-teal-300 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300")
+          : "border-stone-200 bg-[var(--surface)] text-stone-600 hover:border-teal-300 dark:border-stone-700 dark:text-stone-300")
       }
     >
+      {dot && !active && (
+        <span aria-hidden className={"h-1.5 w-1.5 rounded-full " + dot} />
+      )}
       {label}
     </button>
   );

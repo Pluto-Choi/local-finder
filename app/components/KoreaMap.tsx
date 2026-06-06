@@ -140,8 +140,8 @@ export default function KoreaMap() {
                 (active
                   ? "border-teal-500 bg-teal-50 text-teal-800 dark:bg-teal-950/50 dark:text-teal-200"
                   : count > 0
-                    ? "border-stone-200 bg-white text-stone-700 hover:border-teal-300 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200"
-                    : "border-stone-100 bg-white text-stone-400 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-500")
+                    ? "border-stone-200 bg-[var(--surface-muted)] text-stone-700 hover:border-teal-300 dark:border-stone-700 dark:text-stone-200"
+                    : "border-stone-100 bg-[var(--surface-muted)] text-stone-400 dark:border-stone-800 dark:text-stone-500")
               }
             >
               <span>{s.short}</span>
