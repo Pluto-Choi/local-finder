@@ -2,8 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { SIDOS, getSido } from "../lib/regions";
-import { sidoWideServices, sigunguWithServices } from "../lib/query";
-import ServiceCard from "../components/ServiceCard";
+import { sidoWideServices, sigunguServiceCounts } from "../lib/query";
+import FilterableServiceList from "../components/FilterableServiceList";
 
 export function generateStaticParams() {
   return SIDOS.map((s) => ({ sido: s.slug }));
@@ -33,7 +33,11 @@ export default async function SidoPage({
   if (!region) notFound();
 
   const wide = sidoWideServices(sido);
-  const withServices = sigunguWithServices(sido);
+  const counts = sigunguServiceCounts(sido);
+  // 서비스가 있는 시·군·구를 앞으로(개수 많은 순), 나머지는 원래 순서 유지
+  const sigunguSorted = [...region.sigungu].sort(
+    (a, b) => (counts.get(b) ?? 0) - (counts.get(a) ?? 0),
+  );
 
   return (
     <div>
@@ -54,11 +58,7 @@ export default async function SidoPage({
           <h2 className="mb-3 text-sm font-semibold text-stone-500 dark:text-stone-400">
             {region.short} 전역에서 이용 가능
           </h2>
-          <div className="grid gap-3">
-            {wide.map((s) => (
-              <ServiceCard key={s.id} service={s} />
-            ))}
-          </div>
+          <FilterableServiceList services={wide} />
         </section>
       )}
 
@@ -68,20 +68,24 @@ export default async function SidoPage({
             시·군·구별 보기
           </h2>
           <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4">
-            {region.sigungu.map((gu) => {
-              const has = withServices.has(gu);
+            {sigunguSorted.map((gu) => {
+              const n = counts.get(gu) ?? 0;
               return (
                 <li key={gu}>
                   <Link
                     href={`/${region.slug}/${encodeURIComponent(gu)}`}
-                    className="flex items-center justify-between gap-1 rounded-lg border border-stone-200 bg-white px-3 py-2.5 text-sm transition hover:border-teal-400 dark:border-stone-800 dark:bg-stone-900 dark:hover:border-teal-600"
+                    className={
+                      "flex items-center justify-between gap-1 rounded-lg border bg-white px-3 py-2.5 text-sm transition dark:bg-stone-900 " +
+                      (n > 0
+                        ? "border-stone-200 hover:border-teal-400 dark:border-stone-800 dark:hover:border-teal-600"
+                        : "border-stone-100 text-stone-400 dark:border-stone-800/60 dark:text-stone-500")
+                    }
                   >
                     <span>{gu}</span>
-                    {has && (
-                      <span
-                        className="h-1.5 w-1.5 rounded-full bg-teal-500"
-                        aria-label="등록된 서비스 있음"
-                      />
+                    {n > 0 && (
+                      <span className="rounded-full bg-teal-50 px-1.5 py-0.5 text-xs font-semibold text-teal-700 dark:bg-teal-950/50 dark:text-teal-300">
+                        {n}
+                      </span>
                     )}
                   </Link>
                 </li>
@@ -95,7 +99,7 @@ export default async function SidoPage({
         </p>
       )}
 
-      {wide.length === 0 && withServices.size === 0 && (
+      {wide.length === 0 && counts.size === 0 && (
         <p className="mt-6 rounded-xl border border-dashed border-stone-300 px-4 py-6 text-center text-sm text-stone-400 dark:border-stone-700">
           아직 {region.short} 지역 서비스를 수집 중이에요.
         </p>

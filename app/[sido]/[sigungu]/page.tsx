@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { SIDOS, getSido, hasSigungu } from "../../lib/regions";
 import { sigunguServices, sidoWideServices } from "../../lib/query";
-import ServiceCard from "../../components/ServiceCard";
+import FilterableServiceList from "../../components/FilterableServiceList";
 
 export function generateStaticParams() {
   return SIDOS.flatMap((s) =>
@@ -65,11 +65,7 @@ export default async function SigunguPage({
           <h2 className="mb-3 text-sm font-semibold text-stone-500 dark:text-stone-400">
             {gu} 전용 서비스
           </h2>
-          <div className="grid gap-3">
-            {local.map((s) => (
-              <ServiceCard key={s.id} service={s} />
-            ))}
-          </div>
+          <FilterableServiceList services={local} />
         </section>
       ) : (
         <p className="mb-8 rounded-xl border border-dashed border-stone-300 px-4 py-6 text-center text-sm text-stone-400 dark:border-stone-700">
@@ -82,11 +78,7 @@ export default async function SigunguPage({
           <h2 className="mb-3 text-sm font-semibold text-stone-500 dark:text-stone-400">
             {region.short} 전역에서도 이용 가능
           </h2>
-          <div className="grid gap-3">
-            {wide.map((s) => (
-              <ServiceCard key={s.id} service={s} />
-            ))}
-          </div>
+          <FilterableServiceList services={wide} />
         </section>
       )}
     </div>

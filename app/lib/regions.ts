@@ -167,3 +167,14 @@ export function getSido(slug: string): Sido | undefined {
 export function hasSigungu(slug: string, sigungu: string): boolean {
   return getSido(slug)?.sigungu.includes(sigungu) ?? false;
 }
+
+// 서비스가 속한 지역의 표시 라벨과 링크 경로. (검색 결과 등에서 사용)
+export function regionLabel(sido: string, sigungu?: string): string {
+  const region = getSido(sido);
+  if (!region) return sido;
+  return sigungu ? `${region.short} ${sigungu}` : region.short;
+}
+
+export function regionHref(sido: string, sigungu?: string): string {
+  return sigungu ? `/${sido}/${encodeURIComponent(sigungu)}` : `/${sido}`;
+}

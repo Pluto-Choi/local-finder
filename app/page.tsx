@@ -1,69 +1,96 @@
 import Link from "next/link";
-import { CATEGORIES } from "./lib/categories";
 import { SIDOS } from "./lib/regions";
-import { sidoServiceCount } from "./lib/query";
-import { SITE_NAME, SITE_TAGLINE } from "./site";
+import { sidoServiceCount, totalServiceCount } from "./lib/query";
+import { CATEGORIES } from "./lib/categories";
+import { SITE_NAME } from "./site";
+import SearchExplorer from "./components/SearchExplorer";
 
 export default function Home() {
+  const total = totalServiceCount();
+  const sidoCount = SIDOS.length;
+
   return (
     <div>
-      <section className="mb-8">
-        <h1 className="text-2xl font-extrabold leading-snug tracking-tight">
+      {/* Hero */}
+      <section className="relative mb-8 overflow-hidden rounded-3xl border border-stone-200 bg-gradient-to-br from-teal-50 via-white to-cyan-50 px-6 py-9 dark:border-stone-800 dark:from-teal-950/40 dark:via-stone-900 dark:to-cyan-950/30">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-teal-400/20 blur-3xl"
+        />
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-600/10 px-3 py-1 text-xs font-semibold text-teal-700 dark:bg-teal-400/10 dark:text-teal-300">
+          🧭 지역 편의 서비스 길잡이
+        </span>
+        <h1 className="mt-3 text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
           {SITE_NAME}
         </h1>
-        <p className="mt-2 text-sm leading-relaxed text-stone-500 dark:text-stone-400">
-          {SITE_TAGLINE}. 콜버스·공공자전거·지역화폐처럼 그 동네에 살거나 와봐야
-          아는 서비스를 지역별로 모았어요.
+        <p className="mt-3 max-w-lg text-sm leading-relaxed text-stone-600 dark:text-stone-300">
+          맛집·관광지 말고, <strong className="font-semibold text-stone-800 dark:text-stone-100">그 동네가 조용히 굴리는 진짜 편의 서비스</strong>.
+          콜버스·공공자전거·지역화폐처럼 살거나 와봐야 아는 것들을 지역별로 모았어요.
         </p>
+        <div className="mt-5 flex flex-wrap gap-2">
+          <Stat value={`${sidoCount}개`} label="시·도" />
+          <Stat value={`${total}개`} label="편의 서비스" />
+          <Stat value={`${CATEGORIES.length}개`} label="카테고리" />
+        </div>
       </section>
 
-      <section className="mb-8">
-        <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-stone-400">
-          이런 걸 모아요
-        </h2>
-        <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-          {CATEGORIES.map((c) => (
-            <li
-              key={c.key}
-              className="rounded-xl border border-stone-200 bg-white px-3 py-2.5 dark:border-stone-800 dark:bg-stone-900"
-            >
-              <div className="text-sm font-semibold">
-                <span aria-hidden className="mr-1">
-                  {c.emoji}
-                </span>
-                {c.label}
-              </div>
-              <div className="mt-0.5 text-xs leading-snug text-stone-400">
-                {c.desc}
-              </div>
-            </li>
-          ))}
-        </ul>
+      {/* Search + category filter */}
+      <section className="mb-10">
+        <SearchExplorer />
       </section>
 
+      {/* Browse by region */}
       <section>
-        <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-stone-400">
-          지역 선택
-        </h2>
-        <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+        <div className="mb-3 flex items-baseline justify-between">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-stone-400">
+            지역으로 찾기
+          </h2>
+          <span className="text-xs text-stone-400">시·도 → 시·군·구</span>
+        </div>
+        <ul className="grid grid-cols-3 gap-2.5 sm:grid-cols-4">
           {SIDOS.map((s) => {
             const count = sidoServiceCount(s.slug);
+            const hasServices = count > 0;
             return (
               <li key={s.slug}>
                 <Link
                   href={`/${s.slug}`}
-                  className="flex h-full flex-col items-start justify-between gap-2 rounded-xl border border-stone-200 bg-white px-3 py-3 transition hover:border-teal-400 hover:bg-teal-50/50 dark:border-stone-800 dark:bg-stone-900 dark:hover:border-teal-600 dark:hover:bg-teal-950/30"
+                  className={
+                    "group flex h-full flex-col items-start justify-between gap-2 rounded-2xl border bg-white px-3.5 py-3.5 transition dark:bg-stone-900 " +
+                    (hasServices
+                      ? "border-stone-200 hover:-translate-y-0.5 hover:border-teal-400 hover:shadow-md dark:border-stone-800 dark:hover:border-teal-600"
+                      : "border-stone-100 opacity-70 hover:opacity-100 dark:border-stone-800/60")
+                  }
                 >
-                  <span className="text-sm font-semibold">{s.short}</span>
-                  <span className="text-xs text-stone-400">
-                    {count > 0 ? `${count}건` : "수집 예정"}
+                  <span className="text-sm font-bold tracking-tight">
+                    {s.short}
                   </span>
+                  {hasServices ? (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-teal-50 px-2 py-0.5 text-xs font-semibold text-teal-700 dark:bg-teal-950/50 dark:text-teal-300">
+                      {count}건
+                    </span>
+                  ) : (
+                    <span className="text-xs text-stone-300 dark:text-stone-600">
+                      수집 예정
+                    </span>
+                  )}
                 </Link>
               </li>
             );
           })}
         </ul>
       </section>
+    </div>
+  );
+}
+
+function Stat({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="rounded-2xl bg-white/70 px-4 py-2 backdrop-blur dark:bg-stone-900/60">
+      <div className="text-lg font-extrabold tracking-tight text-teal-700 dark:text-teal-300">
+        {value}
+      </div>
+      <div className="text-xs text-stone-500 dark:text-stone-400">{label}</div>
     </div>
   );
 }
