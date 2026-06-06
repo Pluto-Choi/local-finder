@@ -37,19 +37,29 @@ function MiniShape({ slug }: { slug: string }) {
   const p = KOREA_PATHS.find((x) => x.slug === slug);
   if (!p) return null;
   return (
-    <svg
-      viewBox={pathBBox(p.d)}
-      className="h-14 w-14 shrink-0"
-      aria-hidden
-    >
-      <path d={p.d} fill="#0d9488" stroke="#ffffff" strokeWidth={1} />
-    </svg>
+    <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-teal-50 dark:bg-teal-950/40">
+      <svg viewBox={pathBBox(p.d)} className="h-10 w-10" aria-hidden>
+        <path d={p.d} fill="#0d9488" stroke="#ffffff" strokeWidth={1} />
+      </svg>
+    </div>
   );
 }
 
 export default function RegionExplorer() {
   const [sido, setSido] = useState<string | null>(null);
   const [sigungu, setSigungu] = useState<string | null>(null);
+  const [showAllCities, setShowAllCities] = useState(false);
+
+  function goHome() {
+    setSido(null);
+    setSigungu(null);
+    setShowAllCities(false);
+  }
+  function openProvince(slug: string) {
+    setSido(slug);
+    setSigungu(null);
+    setShowAllCities(false);
+  }
 
   const region = sido ? getSido(sido) : null;
 
@@ -78,10 +88,7 @@ export default function RegionExplorer() {
           찾아보세요.
         </p>
         <div className="elevate mt-5 rounded-3xl border border-stone-200/70 bg-[var(--surface)] p-4 dark:border-stone-800 sm:p-6">
-          <KoreaMap onSelect={(s) => {
-            setSido(s);
-            setSigungu(null);
-          }} />
+          <KoreaMap onSelect={openProvince} />
         </div>
 
         {/* 검색은 메인(전국) 화면에서만 노출 */}
@@ -109,10 +116,7 @@ export default function RegionExplorer() {
     return (
       <div>
         <Breadcrumb
-          onHome={() => {
-            setSido(null);
-            setSigungu(null);
-          }}
+          onHome={goHome}
           onProvince={() => setSigungu(null)}
           provinceLabel={region.short}
           cityLabel={sigungu}
@@ -143,15 +147,12 @@ export default function RegionExplorer() {
   }
 
   // ── 도 단위 → 도시 목록 화면 ────────────────────────
+  const citiesWith = sigunguSorted.filter((gu) => (counts.get(gu) ?? 0) > 0);
+  const citiesWithout = sigunguSorted.filter((gu) => (counts.get(gu) ?? 0) === 0);
+
   return (
     <div>
-      <Breadcrumb
-        onHome={() => {
-          setSido(null);
-          setSigungu(null);
-        }}
-        provinceLabel={region.short}
-      />
+      <Breadcrumb onHome={goHome} provinceLabel={region.short} />
       <div className="mt-3 flex items-center gap-3">
         <MiniShape slug={region.slug} />
         <div>
@@ -166,40 +167,58 @@ export default function RegionExplorer() {
         </div>
       </div>
 
-      {region.sigungu.length > 0 ? (
+      {region.sigungu.length > 0 && citiesWith.length > 0 && (
         <section className="mt-6">
-          <SectionTitle>도시(시·군·구) 선택</SectionTitle>
+          <SectionTitle>서비스가 있는 도시</SectionTitle>
           <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4">
-            {sigunguSorted.map((gu) => {
-              const n = counts.get(gu) ?? 0;
-              return (
-                <li key={gu}>
+            {citiesWith.map((gu) => (
+              <li key={gu}>
+                <CityButton
+                  name={gu}
+                  count={counts.get(gu) ?? 0}
+                  onClick={() => setSigungu(gu)}
+                />
+              </li>
+            ))}
+          </ul>
+
+          {citiesWithout.length > 0 && (
+            <div className="mt-3">
+              {showAllCities ? (
+                <>
+                  <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+                    {citiesWithout.map((gu) => (
+                      <li key={gu}>
+                        <CityButton name={gu} count={0} />
+                      </li>
+                    ))}
+                  </ul>
                   <button
                     type="button"
-                    onClick={() => n > 0 && setSigungu(gu)}
-                    disabled={n === 0}
-                    className={
-                      "flex w-full items-center justify-between gap-1 rounded-xl border px-3 py-2.5 text-sm transition " +
-                      (n > 0
-                        ? "elevate-hover cursor-pointer border-stone-200 bg-[var(--surface)] hover:border-teal-400 dark:border-stone-800 dark:hover:border-teal-600"
-                        : "cursor-default border-stone-100 bg-[var(--surface-muted)] text-stone-400 dark:border-stone-800/60 dark:text-stone-500")
-                    }
+                    onClick={() => setShowAllCities(false)}
+                    className="mt-3 text-xs font-medium text-stone-400 hover:text-teal-600 dark:hover:text-teal-400"
                   >
-                    <span>{gu}</span>
-                    {n > 0 && (
-                      <span className="rounded-full bg-teal-50 px-1.5 py-0.5 text-xs font-semibold text-teal-700 dark:bg-teal-950/50 dark:text-teal-300">
-                        {n}
-                      </span>
-                    )}
+                    접기 ▴
                   </button>
-                </li>
-              );
-            })}
-          </ul>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowAllCities(true)}
+                  className="text-xs font-medium text-stone-400 hover:text-teal-600 dark:hover:text-teal-400"
+                >
+                  아직 서비스가 없는 동네 {citiesWithout.length}곳 더 보기 ▾
+                </button>
+              )}
+            </div>
+          )}
         </section>
-      ) : (
+      )}
+
+      {region.sigungu.length > 0 && citiesWith.length === 0 && (
         <p className="mt-6 text-sm text-stone-400">
-          {region.short}은(는) 별도 시·군·구 구분이 없어요.
+          아직 {region.short}에는 도시별 전용 서비스가 없어요.
+          {wide.length > 0 && " 아래 전역 서비스를 확인해보세요."}
         </p>
       )}
 
@@ -212,10 +231,43 @@ export default function RegionExplorer() {
 
       {wide.length === 0 && sigunguTotal === 0 && (
         <p className="mt-6 rounded-xl border border-dashed border-stone-300 px-4 py-6 text-center text-sm text-stone-400 dark:border-stone-700">
-          아직 {region.short} 지역 서비스를 수집 중이에요.
+          {region.short} 지역 서비스를 모으는 중이에요. 알고 있는 서비스가
+          있다면 제보해 주세요.
         </p>
       )}
     </div>
+  );
+}
+
+function CityButton({
+  name,
+  count,
+  onClick,
+}: {
+  name: string;
+  count: number;
+  onClick?: () => void;
+}) {
+  const active = count > 0;
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={!active}
+      className={
+        "flex w-full items-center justify-between gap-1 rounded-xl border px-3 py-2.5 text-sm transition " +
+        (active
+          ? "elevate-hover cursor-pointer border-stone-200 bg-[var(--surface)] hover:border-teal-400 dark:border-stone-800 dark:hover:border-teal-600"
+          : "cursor-default border-stone-100 bg-[var(--surface-muted)] text-stone-400 dark:border-stone-800/60 dark:text-stone-500")
+      }
+    >
+      <span>{name}</span>
+      {active && (
+        <span className="rounded-full bg-teal-50 px-1.5 py-0.5 text-xs font-semibold text-teal-700 dark:bg-teal-950/50 dark:text-teal-300">
+          {count}
+        </span>
+      )}
+    </button>
   );
 }
 

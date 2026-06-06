@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
-import { SITE_NAME, SITE_TAGLINE, SITE_URL } from "./site";
+import {
+  DATA_NOTE,
+  LAST_UPDATED,
+  SITE_NAME,
+  SITE_TAGLINE,
+  SITE_URL,
+} from "./site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -38,10 +44,15 @@ export default function RootLayout({
         <main className="mx-auto max-w-4xl px-5 py-7">{children}</main>
         <footer className="mx-auto max-w-4xl px-5 pb-12 pt-6">
           <div className="border-t border-stone-200/70 pt-6 text-xs leading-relaxed text-stone-400 dark:border-stone-800/70">
-            <p className="font-medium text-stone-500 dark:text-stone-400">
-              {SITE_NAME}
-            </p>
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+              <span className="font-medium text-stone-500 dark:text-stone-400">
+                {SITE_NAME}
+              </span>
+              <span className="text-stone-300 dark:text-stone-600">·</span>
+              <span>최종 업데이트 {LAST_UPDATED}</span>
+            </div>
             <p className="mt-1">{SITE_TAGLINE}</p>
+            <p className="mt-2 text-stone-400/90">{DATA_NOTE}</p>
           </div>
         </footer>
       </body>
