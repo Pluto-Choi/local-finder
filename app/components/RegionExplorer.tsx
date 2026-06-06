@@ -1,14 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { getSido } from "../lib/regions";
+import { SIDOS, getSido } from "../lib/regions";
 import {
   sidoWideServices,
   sigunguServices,
   sigunguServiceCounts,
+  totalServiceCount,
 } from "../lib/query";
+import { CATEGORIES } from "../lib/categories";
 import { KOREA_PATHS } from "../lib/koreaMapPaths";
 import KoreaMap from "./KoreaMap";
+import SearchExplorer from "./SearchExplorer";
 import FilterableServiceList from "./FilterableServiceList";
 
 // path d 문자열에서 bounding box 계산 → 선택한 도 모양만 확대해서 보여주는 미니 지도용
@@ -80,6 +83,18 @@ export default function RegionExplorer() {
             setSigungu(null);
           }} />
         </div>
+
+        {/* 검색은 메인(전국) 화면에서만 노출 */}
+        <section className="mt-12 border-t border-stone-200/70 pt-8 dark:border-stone-800/70">
+          <h2 className="mb-1 text-sm font-semibold uppercase tracking-wide text-stone-400">
+            이름으로 바로 찾기
+          </h2>
+          <p className="mb-4 text-xs text-stone-400">
+            {SIDOS.length}개 시·도 · {totalServiceCount()}개 편의 서비스 ·{" "}
+            {CATEGORIES.length}개 카테고리
+          </p>
+          <SearchExplorer />
+        </section>
       </div>
     );
   }
