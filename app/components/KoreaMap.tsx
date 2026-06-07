@@ -12,6 +12,11 @@ type RegionInfo = {
   cy: number;
 };
 
+// 수도권처럼 중심점이 겹치는 도는 라벨을 살짝 옮겨 가독성 확보
+const LABEL_OFFSETS: Record<string, { dx: number; dy: number }> = {
+  gyeonggi: { dx: 22, dy: 28 }, // 서울과 중심점이 거의 겹쳐 남쪽으로 이동
+};
+
 export default function KoreaMap({
   onSelect,
 }: {
@@ -79,11 +84,13 @@ export default function KoreaMap({
           })}
 
           {/* 지역명 라벨 (도 식별용) */}
-          {regions.map((r) => (
+          {regions.map((r) => {
+            const off = LABEL_OFFSETS[r.slug];
+            return (
             <text
               key={`label-${r.slug}`}
-              x={r.cx}
-              y={r.cy}
+              x={r.cx + (off?.dx ?? 0)}
+              y={r.cy + (off?.dy ?? 0)}
               textAnchor="middle"
               dominantBaseline="central"
               fontSize={10}
@@ -97,7 +104,8 @@ export default function KoreaMap({
             >
               {r.short}
             </text>
-          ))}
+            );
+          })}
         </svg>
 
         {/* 호버 지역명 */}
