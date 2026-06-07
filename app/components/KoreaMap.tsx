@@ -8,6 +8,8 @@ type RegionInfo = {
   slug: string;
   short: string;
   d: string;
+  cx: number;
+  cy: number;
 };
 
 export default function KoreaMap({
@@ -25,6 +27,8 @@ export default function KoreaMap({
           slug: p.slug,
           short: region?.short ?? p.slug,
           d: p.d,
+          cx: p.cx,
+          cy: p.cy,
         };
       }),
     [],
@@ -48,13 +52,14 @@ export default function KoreaMap({
               <path
                 key={r.slug}
                 d={r.d}
-                fill={active ? "#0d9488" : "#99f6e4"}
-                stroke="#ffffff"
-                strokeWidth={active ? 1.4 : 0.8}
+                fill={active ? "#0d9488" : "#5eead4"}
+                stroke={active ? "#0f766e" : "#0d9488"}
+                strokeWidth={active ? 1.6 : 1}
+                strokeLinejoin="round"
                 className="cursor-pointer transition-[fill,stroke-width] duration-150"
                 style={{
                   filter: active
-                    ? "drop-shadow(0 2px 6px rgba(13,148,136,0.4))"
+                    ? "drop-shadow(0 2px 6px rgba(13,148,136,0.45))"
                     : undefined,
                 }}
                 onMouseEnter={() => setHover(r.slug)}
@@ -72,6 +77,27 @@ export default function KoreaMap({
               />
             );
           })}
+
+          {/* 지역명 라벨 (도 식별용) */}
+          {regions.map((r) => (
+            <text
+              key={`label-${r.slug}`}
+              x={r.cx}
+              y={r.cy}
+              textAnchor="middle"
+              dominantBaseline="central"
+              fontSize={10}
+              fontWeight={700}
+              fill="#134e4a"
+              stroke="#ffffff"
+              strokeWidth={2.4}
+              paintOrder="stroke"
+              strokeLinejoin="round"
+              className="pointer-events-none select-none"
+            >
+              {r.short}
+            </text>
+          ))}
         </svg>
 
         {/* 호버 지역명 */}
