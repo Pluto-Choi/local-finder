@@ -1249,4 +1249,18 @@ export const SERVICES: Service[] = [
     url: "https://djstar.kr",
     tags: ["천문대", "무료", "별관측", "과학체험"],
   },
+
+  // ───────────── 울산 (보강) ─────────────
+  {
+    id: "ulsan-taehwagang-garden",
+    name: "태화강 국가정원",
+    category: "culture",
+    sido: "ulsan",
+    summary: "입장료 무료인 도심 속 국가정원",
+    description:
+      "울산 도심 태화강변에 펼쳐진 국가정원으로 입장료가 무료입니다. 대나무숲(십리대숲), 계절별 꽃밭, 생태습지를 산책하고 봄·가을엔 정원박람회·축제도 열립니다. 휠체어·유아차 이동이 쉬운 무장애 동선이 잘 갖춰져 있어 가족·어르신과 함께 부담 없이 자연을 즐기기 좋습니다.",
+    howTo: "상시 무료 개방(상설 정원), 주차장·방문자센터 이용 가능",
+    url: "https://www.ulsan.go.kr/s/garden/main.ulsan",
+    tags: ["국가정원", "무료", "십리대숲", "산책"],
+  },
 ];
