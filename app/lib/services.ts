@@ -1263,4 +1263,19 @@ export const SERVICES: Service[] = [
     url: "https://www.ulsan.go.kr/s/garden/main.ulsan",
     tags: ["국가정원", "무료", "십리대숲", "산책"],
   },
+
+  // ───────────── 강원 (보강) ─────────────
+  {
+    id: "gangwon-yanggu-huimang-taxi",
+    name: "양구군 희망택시",
+    category: "drt",
+    sido: "gangwon",
+    sigungu: "양구군",
+    summary: "농어촌버스 안 가는 마을 호출택시",
+    description:
+      "농어촌버스가 닿지 않는 양구군 교통 취약 마을 주민을 위한 농촌형 수요응답 택시입니다. 양구읍·국토정중앙면·동면·방산면·해안면 등 군 전역 84개 마을에서 운영되며, 버스 요금 수준의 적은 부담으로 읍내 병원·장보기 같은 일상 이동을 할 수 있습니다.",
+    howTo: "대상 마을 주민으로 등록(반기별 모집) 후 전화 호출",
+    url: "https://www.yanggu.go.kr",
+    tags: ["희망택시", "농어촌교통", "교통복지"],
+  },
 ];
