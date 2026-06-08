@@ -57,14 +57,14 @@ export default function KoreaMap({
               <path
                 key={r.slug}
                 d={r.d}
-                fill={active ? "#0d9488" : "#5eead4"}
-                stroke={active ? "#0f766e" : "#0d9488"}
+                fill={active ? "#3b82f6" : "#dbeafe"}
+                stroke={active ? "#1d4ed8" : "#93c5fd"}
                 strokeWidth={active ? 1.6 : 1}
                 strokeLinejoin="round"
                 className="cursor-pointer transition-[fill,stroke-width] duration-150"
                 style={{
                   filter: active
-                    ? "drop-shadow(0 2px 6px rgba(13,148,136,0.45))"
+                    ? "drop-shadow(0 2px 6px rgba(37,99,235,0.4))"
                     : undefined,
                 }}
                 onMouseEnter={() => setHover(r.slug)}
@@ -93,11 +93,11 @@ export default function KoreaMap({
               y={r.cy + (off?.dy ?? 0)}
               textAnchor="middle"
               dominantBaseline="central"
-              fontSize={10}
+              fontSize={11}
               fontWeight={700}
-              fill="#134e4a"
+              fill="#1e3a8a"
               stroke="#ffffff"
-              strokeWidth={2.4}
+              strokeWidth={2.6}
               paintOrder="stroke"
               strokeLinejoin="round"
               className="pointer-events-none select-none"
@@ -136,8 +136,8 @@ export default function KoreaMap({
                 className={
                   "rounded-lg border px-2.5 py-1.5 text-xs font-medium transition " +
                   (active
-                    ? "border-teal-500 bg-teal-50 text-teal-800 dark:border-teal-500 dark:bg-teal-950/60 dark:text-teal-100"
-                    : "border-stone-200 bg-white text-stone-700 hover:border-teal-400 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100")
+                    ? "border-blue-500 bg-blue-50 text-blue-800 dark:border-blue-500 dark:bg-blue-950/60 dark:text-blue-100"
+                    : "border-stone-200 bg-white text-stone-700 hover:border-blue-400 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100")
                 }
               >
                 {s.short}
