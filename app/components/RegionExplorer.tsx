@@ -111,53 +111,24 @@ export default function RegionExplorer() {
   );
   const sigunguTotal = [...counts.values()].reduce((a, b) => a + b, 0);
 
-  // ── 도시(시·군·구) 서비스 화면 ──────────────────────
-  if (sigungu) {
-    return (
-      <div>
-        <Breadcrumb
-          onHome={goHome}
-          onProvince={() => setSigungu(null)}
-          provinceLabel={region.short}
-          cityLabel={sigungu}
-        />
-        <h1 className="mt-3 text-2xl font-extrabold tracking-tight">
-          {region.short} {sigungu}
-        </h1>
-
-        {local.length > 0 ? (
-          <section className="mt-5">
-            <SectionTitle>{sigungu} 전용 서비스</SectionTitle>
-            <FilterableServiceList services={local} />
-          </section>
-        ) : (
-          <p className="mt-5 rounded-xl border border-dashed border-stone-300 px-4 py-6 text-center text-sm text-stone-400 dark:border-stone-700">
-            아직 {sigungu} 전용으로 등록된 서비스가 없어요.
-          </p>
-        )}
-
-        {wide.length > 0 && (
-          <section className="mt-8">
-            <SectionTitle>{region.short} 전역에서도 이용 가능</SectionTitle>
-            <FilterableServiceList services={wide} />
-          </section>
-        )}
-      </div>
-    );
-  }
-
-  // ── 도 단위 → 도시 목록 화면 ────────────────────────
+  // ── 도/도시 통합 화면: 상단 스코프 버튼으로 전환 ──────────
   const citiesWith = sigunguSorted.filter((gu) => (counts.get(gu) ?? 0) > 0);
   const citiesWithout = sigunguSorted.filter((gu) => (counts.get(gu) ?? 0) === 0);
 
   return (
     <div>
-      <Breadcrumb onHome={goHome} provinceLabel={region.short} />
+      <Breadcrumb
+        onHome={goHome}
+        onProvince={sigungu ? () => setSigungu(null) : undefined}
+        provinceLabel={region.short}
+        cityLabel={sigungu ?? undefined}
+      />
       <div className="mt-3 flex items-center gap-3">
         <MiniShape slug={region.slug} />
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight">
-            {region.short}, 어느 도시로?
+            {region.short}
+            {sigungu ? ` ${sigungu}` : ""}
           </h1>
           <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
             {sigunguTotal + wide.length}개 서비스
@@ -167,75 +138,138 @@ export default function RegionExplorer() {
         </div>
       </div>
 
-      {region.sigungu.length > 0 && citiesWith.length > 0 && (
-        <section className="mt-6">
-          <SectionTitle>서비스가 있는 도시</SectionTitle>
-          <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4">
-            {citiesWith.map((gu) => (
-              <li key={gu}>
-                <CityButton
-                  name={gu}
-                  count={counts.get(gu) ?? 0}
-                  onClick={() => setSigungu(gu)}
-                />
-              </li>
-            ))}
-          </ul>
+      {/* 스코프 버튼 바: 지역 전체 + 서비스 있는 도시. 클릭하면 아래 목록만 바뀜 */}
+      {citiesWith.length > 0 && (
+        <div className="mt-5 flex flex-wrap gap-2">
+          <ScopeButton
+            label="지역 전체"
+            count={wide.length}
+            active={sigungu === null}
+            onClick={() => setSigungu(null)}
+          />
+          {citiesWith.map((gu) => (
+            <ScopeButton
+              key={gu}
+              label={gu}
+              count={counts.get(gu) ?? 0}
+              active={sigungu === gu}
+              onClick={() => setSigungu(gu)}
+            />
+          ))}
+        </div>
+      )}
 
-          {citiesWithout.length > 0 && (
-            <div className="mt-3">
-              {showAllCities ? (
-                <>
-                  <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4">
-                    {citiesWithout.map((gu) => (
-                      <li key={gu}>
-                        <CityButton name={gu} count={0} />
-                      </li>
-                    ))}
-                  </ul>
-                  <button
-                    type="button"
-                    onClick={() => setShowAllCities(false)}
-                    className="mt-3 text-xs font-medium text-stone-400 hover:text-teal-600 dark:hover:text-teal-400"
-                  >
-                    접기 ▴
-                  </button>
-                </>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setShowAllCities(true)}
-                  className="text-xs font-medium text-stone-400 hover:text-teal-600 dark:hover:text-teal-400"
-                >
-                  아직 서비스가 없는 동네 {citiesWithout.length}곳 더 보기 ▾
-                </button>
-              )}
-            </div>
+      {/* 선택된 스코프의 서비스 목록 */}
+      {sigungu === null ? (
+        wide.length > 0 ? (
+          <section className="mt-6">
+            <SectionTitle>
+              {region.short} 전역에서 이용 가능 ({wide.length})
+            </SectionTitle>
+            <FilterableServiceList services={wide} />
+          </section>
+        ) : citiesWith.length > 0 ? (
+          <p className="mt-6 rounded-xl border border-dashed border-stone-300 px-4 py-6 text-center text-sm text-stone-400 dark:border-stone-700">
+            {region.short} 전역 공통 서비스는 없어요. 위 도시 버튼에서 골라보세요.
+          </p>
+        ) : (
+          <p className="mt-6 rounded-xl border border-dashed border-stone-300 px-4 py-6 text-center text-sm text-stone-400 dark:border-stone-700">
+            {region.short} 지역 서비스를 모으는 중이에요. 알고 있는 서비스가
+            있다면 제보해 주세요.
+          </p>
+        )
+      ) : (
+        <>
+          {local.length > 0 ? (
+            <section className="mt-6">
+              <SectionTitle>{sigungu} 전용 서비스</SectionTitle>
+              <FilterableServiceList services={local} />
+            </section>
+          ) : (
+            <p className="mt-6 rounded-xl border border-dashed border-stone-300 px-4 py-6 text-center text-sm text-stone-400 dark:border-stone-700">
+              아직 {sigungu} 전용으로 등록된 서비스가 없어요.
+            </p>
           )}
-        </section>
+
+          {wide.length > 0 && (
+            <section className="mt-8">
+              <SectionTitle>{region.short} 전역에서도 이용 가능</SectionTitle>
+              <FilterableServiceList services={wide} />
+            </section>
+          )}
+        </>
       )}
 
-      {region.sigungu.length > 0 && citiesWith.length === 0 && (
-        <p className="mt-6 text-sm text-stone-400">
-          아직 {region.short}에는 도시별 전용 서비스가 없어요.
-          {wide.length > 0 && " 아래 전역 서비스를 확인해보세요."}
-        </p>
-      )}
-
-      {wide.length > 0 && (
-        <section className="mt-8">
-          <SectionTitle>{region.short} 전역에서 이용 가능 ({wide.length})</SectionTitle>
-          <FilterableServiceList services={wide} />
-        </section>
-      )}
-
-      {wide.length === 0 && sigunguTotal === 0 && (
-        <p className="mt-6 rounded-xl border border-dashed border-stone-300 px-4 py-6 text-center text-sm text-stone-400 dark:border-stone-700">
-          {region.short} 지역 서비스를 모으는 중이에요. 알고 있는 서비스가
-          있다면 제보해 주세요.
-        </p>
+      {/* 아직 서비스가 없는 동네 (접이식, 참고용) */}
+      {citiesWithout.length > 0 && (
+        <div className="mt-8 border-t border-stone-200/70 pt-4 dark:border-stone-800/70">
+          {showAllCities ? (
+            <>
+              <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+                {citiesWithout.map((gu) => (
+                  <li key={gu}>
+                    <CityButton name={gu} count={0} />
+                  </li>
+                ))}
+              </ul>
+              <button
+                type="button"
+                onClick={() => setShowAllCities(false)}
+                className="mt-3 text-xs font-medium text-stone-400 hover:text-teal-600 dark:hover:text-teal-400"
+              >
+                접기 ▴
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setShowAllCities(true)}
+              className="text-xs font-medium text-stone-400 hover:text-teal-600 dark:hover:text-teal-400"
+            >
+              아직 서비스가 없는 동네 {citiesWithout.length}곳 보기 ▾
+            </button>
+          )}
+        </div>
       )}
     </div>
+  );
+}
+
+function ScopeButton({
+  label,
+  count,
+  active,
+  onClick,
+}: {
+  label: string;
+  count: number;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={
+        "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium transition " +
+        (active
+          ? "border-teal-500 bg-teal-500 text-white"
+          : "border-stone-200 bg-[var(--surface)] text-stone-600 hover:border-teal-300 dark:border-stone-700 dark:text-stone-300")
+      }
+    >
+      <span>{label}</span>
+      <span
+        className={
+          "rounded-full px-1.5 py-0.5 text-xs font-semibold " +
+          (active
+            ? "bg-white/25 text-white"
+            : "bg-teal-50 text-teal-700 dark:bg-teal-950/50 dark:text-teal-300")
+        }
+      >
+        {count}
+      </span>
+    </button>
   );
 }
 
