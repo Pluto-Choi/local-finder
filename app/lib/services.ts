@@ -1278,4 +1278,19 @@ export const SERVICES: Service[] = [
     url: "https://www.yanggu.go.kr",
     tags: ["희망택시", "농어촌교통", "교통복지"],
   },
+
+  // ───────────── 충북 (보강) ─────────────
+  {
+    id: "chungbuk-cheongju-happytaxi",
+    name: "청주 시골마을 행복택시",
+    category: "drt",
+    sido: "chungbuk",
+    sigungu: "청주시",
+    summary: "버스 뜸한 읍·면 마을 공영버스 요금 택시",
+    description:
+      "버스정류장까지 400m 이상 떨어졌거나 하루 버스 운행이 1회 이하인 청주 외곽 읍·면 마을 주민을 위한 농촌형 수요응답 택시입니다. 공영버스 요금 수준만 내면 마을 집결지에서 읍·면 소재지까지 데려다줘 병원·장보기 같은 이동이 편해집니다. 운행 마을이 67개소로 꾸준히 늘고 있습니다.",
+    howTo: "대상 마을 주민으로 등록 후 지정 콜센터로 전화 호출",
+    url: "https://www.cheongju.go.kr",
+    tags: ["행복택시", "농촌교통", "읍면", "교통복지"],
+  },
 ];
