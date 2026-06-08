@@ -54,7 +54,7 @@ export default function ServiceCard({
       {(service.tags?.length || service.url) && (
         <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1.5">
           {service.tags?.map((t) => (
-            <span key={t} className="text-xs text-stone-400">
+            <span key={t} className="text-xs text-stone-500 dark:text-stone-400">
               #{t}
             </span>
           ))}

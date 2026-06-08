@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { SIDOS, getSido } from "../lib/regions";
 import {
   sidoWideServices,
@@ -46,20 +47,27 @@ function MiniShape({ slug }: { slug: string }) {
 }
 
 export default function RegionExplorer() {
-  const [sido, setSido] = useState<string | null>(null);
-  const [sigungu, setSigungu] = useState<string | null>(null);
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [showAllCities, setShowAllCities] = useState(false);
 
-  function goHome() {
-    setSido(null);
-    setSigungu(null);
+  // 화면 상태(시·도/시·군·구)를 URL 쿼리에 둬서 뒤로가기·공유·로고 홈이 그대로 동작하게 함
+  const sido = searchParams.get("sido");
+  const sigungu = searchParams.get("sigungu");
+
+  // 쿼리만 바꾸는 클라이언트 내비게이션. scroll: true(기본)로 새 목록을 위에서부터 보여줌
+  function navigate(nextSido: string | null, nextSigungu: string | null) {
+    const params = new URLSearchParams();
+    if (nextSido) params.set("sido", nextSido);
+    if (nextSigungu) params.set("sigungu", nextSigungu);
+    const qs = params.toString();
     setShowAllCities(false);
+    router.push(qs ? `/?${qs}` : "/");
   }
-  function openProvince(slug: string) {
-    setSido(slug);
-    setSigungu(null);
-    setShowAllCities(false);
-  }
+
+  const goHome = () => navigate(null, null);
+  const openProvince = (slug: string) => navigate(slug, null);
+  const setSigungu = (gu: string | null) => navigate(sido, gu);
 
   const region = sido ? getSido(sido) : null;
 
@@ -138,9 +146,9 @@ export default function RegionExplorer() {
         </div>
       </div>
 
-      {/* 스코프 버튼 바: 지역 전체 + 서비스 있는 도시. 클릭하면 아래 목록만 바뀜 */}
+      {/* 스코프 버튼 바: 지역 전체 + 서비스 있는 도시. 스크롤해도 상단에 고정돼 도시 전환이 쉬움 */}
       {citiesWith.length > 0 && (
-        <div className="mt-5 flex flex-wrap gap-2">
+        <div className="sticky top-[57px] z-20 -mx-5 mt-5 flex flex-wrap gap-2 border-b border-stone-200/60 bg-[var(--background)]/90 px-5 py-3 backdrop-blur-md dark:border-stone-800/60">
           <ScopeButton
             label="지역 전체"
             count={wide.length}
@@ -252,7 +260,7 @@ function ScopeButton({
       onClick={onClick}
       aria-pressed={active}
       className={
-        "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium transition " +
+        "inline-flex min-h-[40px] items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-medium transition " +
         (active
           ? "border-teal-500 bg-teal-500 text-white"
           : "border-stone-200 bg-[var(--surface)] text-stone-600 hover:border-teal-300 dark:border-stone-700 dark:text-stone-300")

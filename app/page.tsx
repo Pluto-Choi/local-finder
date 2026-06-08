@@ -1,9 +1,12 @@
+import { Suspense } from "react";
 import RegionExplorer from "./components/RegionExplorer";
 
 export default function Home() {
   return (
     <div>
-      <RegionExplorer />
+      <Suspense fallback={null}>
+        <RegionExplorer />
+      </Suspense>
     </div>
   );
 }
