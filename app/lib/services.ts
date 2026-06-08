@@ -1334,4 +1334,18 @@ export const SERVICES: Service[] = [
     url: "https://www.gb.go.kr",
     tags: ["행복택시", "1000원택시", "농촌교통", "DRT", "교통복지"],
   },
+  // ───────────── 경남 (보강) ─────────────
+  {
+    id: "gimhae-tagogaya",
+    name: "김해 공영자전거 '타고가야'",
+    category: "mobility",
+    sido: "gyeongnam",
+    sigungu: "김해시",
+    summary: "앱으로 빌려 타는 김해시 공영 무인 자전거",
+    description:
+      "김해시가 운영하는 무인 공영자전거입니다. 시내 곳곳 무인 대여소에서 앱으로 빌리고 반납할 수 있어, 가야 유적과 도심을 잇는 짧은 이동에 편리합니다. 회원 가입 후 정기권·1일권 등으로 저렴하게 이용합니다.",
+    howTo: "'타고가야' 앱 설치·회원가입 → 대여소에서 자전거 대여 후 아무 대여소에 반납",
+    url: "https://www.gimhae.go.kr",
+    tags: ["공공자전거", "타고가야", "무인대여", "가야"],
+  },
 ];
