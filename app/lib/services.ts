@@ -1127,4 +1127,44 @@ export const SERVICES: Service[] = [
     url: "https://mediahub.seoul.go.kr/archives/2017158",
     tags: ["지역화폐", "할인", "제로페이", "전통시장"],
   },
+
+  // ───────────── 인천 (보강) ─────────────
+  {
+    id: "incheon-ferry-subsidy",
+    name: "인천 연안여객선 운임 지원",
+    category: "benefit",
+    sido: "incheon",
+    summary: "섬 출신 출향민 여객선 70% 할인",
+    description:
+      "인천 섬 지역에 본적이나 주소를 뒀던 출향민이 인천 연안여객선을 탈 때 정규 운임의 70%를 지원하는 사업입니다. 백령·연평·덕적 등 인천 앞바다 섬을 오갈 때 비싼 뱃삯 부담을 크게 덜 수 있습니다.",
+    howTo: "지정 예매 사이트에서 대상자 확인 후 할인 적용(별도 신청 불요)",
+    url: "https://www.incheon.go.kr/icbenefit/ICB010201/view?srvcId=26",
+    tags: ["여객선", "섬", "운임지원", "출향민"],
+  },
+  {
+    id: "incheon-ongjin-ferry-subsidy",
+    name: "옹진군 여객운임 지원",
+    category: "benefit",
+    sido: "incheon",
+    sigungu: "옹진군",
+    summary: "인천시민 섬 여객선 80% 지원",
+    description:
+      "옹진군이 북도·연평·백령·대청·덕적·자월 6개 도서면을 찾는 인천시민에게 여객선 운임의 80%(자부담 20%)를 지원하는 사업입니다. 비싼 뱃삯 때문에 섬 여행을 망설이던 인천시민이 부담 없이 옹진 섬을 다녀올 수 있습니다.",
+    howTo: "여객선 예매 시 인천시민 확인 후 지원 적용(연중 시행)",
+    url: "https://www.ongjin.go.kr",
+    tags: ["여객선", "섬", "운임지원", "도서"],
+  },
+  {
+    id: "incheon-ganghwa-hospital-taxi",
+    name: "강화군 병원 동행 택시비 지원",
+    category: "convenience",
+    sido: "incheon",
+    sigungu: "강화군",
+    summary: "저소득 중증질환자 병원 왕복 택시 지원",
+    description:
+      "강화군이 저소득 중증질환자가 병원을 오갈 때 왕복 택시비를 지원하는 사업입니다. 관내 택시 사업자들이 참여해 실제 운행한 왕복 요금만 지원받고 대기시간 비용은 받지 않으며, 보호자가 없으면 병원 접수까지 도와줍니다. 교통이 불편한 강화에서 거동이 어려운 주민에게 든든한 이동 수단입니다.",
+    howTo: "강화군 보건소·읍면사무소에 대상자 신청",
+    url: "https://www.ganghwa.go.kr",
+    tags: ["병원동행", "택시", "교통약자", "복지"],
+  },
 ];
