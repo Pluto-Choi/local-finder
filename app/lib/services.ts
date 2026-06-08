@@ -1293,4 +1293,18 @@ export const SERVICES: Service[] = [
     url: "https://www.cheongju.go.kr",
     tags: ["행복택시", "농촌교통", "읍면", "교통복지"],
   },
+  // ───────────── 충남 (보강) ─────────────
+  {
+    id: "chungnam-gongju-baekjessing",
+    name: "공주 백제씽씽 무료 공공자전거",
+    category: "mobility",
+    sido: "chungnam",
+    sigungu: "공주시",
+    summary: "원도심·금강변에서 무료로 빌려 타는 공공자전거",
+    description:
+      "공주시가 운영하는 무료 공공자전거입니다. 공산성·금강변·원도심 일대 대여소에서 신분증만 맡기면 별도 요금 없이 빌려 탈 수 있어, 백제 유적과 금강 산책로를 자전거로 둘러보기 좋습니다.",
+    howTo: "가까운 대여소 방문 → 신분증 제시 후 무료 대여(대여소별 운영시간 확인)",
+    url: "https://www.gongju.go.kr",
+    tags: ["공공자전거", "무료", "백제씽씽", "금강", "원도심"],
+  },
 ];
